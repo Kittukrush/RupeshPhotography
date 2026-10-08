@@ -1,0 +1,500 @@
+/* ==========================================================
+   Rupesh Sakpal – Photography Portfolio
+   (Poppins is loaded via <link> in index.html, not @import)
+   ========================================================== */
+
+:root {
+  --bg: #1f2029;
+  --panel: #102770;
+  --accent: #ffeba7;
+  --name-size: 8vw;                       /* hero name size; badge position scales with it */
+  --hero-image: url('https://assets.codepen.io/1462889/photo.jpeg');  /* <- swap for your own photo, e.g. url('Photos/hero.jpg') */
+  --close-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M5 5l14 14M19 5L5 19'/%3E%3C/svg%3E");
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #fff;
+  background-color: var(--bg);
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+  -webkit-transition: all 300ms linear;
+  transition: all 300ms linear;
+  perspective: 800px;
+}
+
+a { cursor: pointer; }
+a:hover { text-decoration: none; }
+
+::selection      { color: #c4c3ca; background-color: #000; }
+::-moz-selection { color: #c4c3ca; background-color: #000; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* #Cursor (desktop / mouse only)
+================================================== */
+
+.cursor,
+.cursor2,
+.cursor3 {
+  position: fixed;
+  border-radius: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  pointer-events: none;
+  left: -100px;
+  top: 50%;
+  mix-blend-mode: difference;
+  -webkit-transition: all 300ms linear;
+  transition: all 300ms linear;
+}
+.cursor {
+  background-color: #fff;
+  height: 0;
+  width: 0;
+  z-index: 99999;
+}
+.cursor2,
+.cursor3 {
+  height: 36px;
+  width: 36px;
+  z-index: 99998;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+}
+.cursor2.hover,
+.cursor3.hover {
+  -webkit-transform: scale(2) translateX(-25%) translateY(-25%);
+  transform: scale(2) translateX(-25%) translateY(-25%);
+  border: none;
+}
+.cursor2 { border: 2px solid #fff; }
+.cursor2.hover {
+  background: rgba(255,255,255,1);
+  border-color: transparent;
+}
+
+/* #Hero
+================================================== */
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+  background-image: var(--hero-image);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1) rotateX(0);
+  box-shadow: 0 0 40px rgba(0,0,0,0.2);
+  -webkit-transition: all 300ms linear;
+  transition: all 300ms linear;
+  -webkit-transition-delay: 400ms;
+  transition-delay: 400ms;
+  transform-origin: center top;
+}
+
+.hero-section h1 {
+  color: #fff;
+  font-size: var(--name-size);
+  line-height: 1;
+  font-weight: 900;
+}
+
+.hero-section .dancing {
+  color: var(--accent);
+  font-size: clamp(13px, 2vw, 25px);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  /* moves up by a fixed share of the name size so it works at every screen width */
+  transform: translateY(calc(var(--name-size) * -1.5)) rotate(-45deg);
+}
+.hero-section .dancing span {
+  padding: 8px 15px;
+  padding-right: 10px;
+  display: inline-block;
+  border-radius: 5px;
+  background-color: var(--panel);
+}
+
+.hero-section p {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--accent);
+}
+.hero-section .work-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 0;
+}
+.hero-section p span {
+  margin-left: 15px;
+  margin-right: 15px;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* hero reacts when a panel opens */
+body.about-on .hero-section,
+body.contact-on .hero-section {
+  transform: scale(0.75);
+  -webkit-transition-delay: 0ms;
+  transition-delay: 0ms;
+}
+body.Wedding-on .hero-section,
+body.Model-on .hero-section,
+body.nature-on .hero-section {
+  transform: rotateX(-10deg);
+  -webkit-transition-delay: 0ms;
+  transition-delay: 0ms;
+}
+
+/* about / contact triggers */
+.about-text,
+.contact-text {
+  position: absolute;
+  font-size: 30px;
+  line-height: 1;
+  opacity: 0.5;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  top: 50%;
+  cursor: pointer;
+  z-index: 2;
+  -webkit-writing-mode: vertical-lr;
+  writing-mode: vertical-lr;
+  -webkit-transition: all 200ms linear;
+  transition: all 200ms linear;
+}
+.about-text   { left: 20px;  transform: translateY(-50%); }
+.contact-text { right: 20px; transform: translateY(-50%) rotate(180deg); }
+.about-text:hover,
+.contact-text:hover,
+.about-text:focus-visible,
+.contact-text:focus-visible { opacity: 1; }
+
+/* #Full-screen panels (about, contact, galleries)
+   Shell = fixed + clipped. .section-scroll = the part that scrolls,
+   so the close button always stays on screen.
+================================================== */
+
+.about-section,
+.contact-section,
+.Wedding-section,
+.Model-section,
+.nature-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: block;
+  overflow: hidden;
+  background-color: var(--panel);
+  visibility: hidden;
+  -webkit-transition: all 300ms linear;
+  transition: all 300ms linear;
+  z-index: 10;
+}
+.about-section   { transform: translateX(-100%); }
+.contact-section { transform: translateX(100%); }
+.Wedding-section,
+.Model-section,
+.nature-section { top: 100%; }
+
+body.about-on   .about-section,
+body.contact-on .contact-section {
+  transform: translateX(0);
+  visibility: visible;
+  -webkit-transition-delay: 400ms;
+  transition-delay: 400ms;
+}
+body.Wedding-on .Wedding-section,
+body.Model-on   .Model-section,
+body.nature-on  .nature-section {
+  top: 0;
+  visibility: visible;
+  -webkit-transition-delay: 400ms;
+  transition-delay: 400ms;
+}
+
+.section-scroll {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  z-index: 1;
+}
+
+/* close buttons */
+.about-close,
+.contact-close,
+.Wedding-close,
+.Model-close,
+.nature-close {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  display: block;
+  overflow: hidden;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 32px 32px;
+  background-image: var(--close-icon);
+  -webkit-transition: all 200ms linear;
+  transition: all 200ms linear;
+  cursor: pointer;
+  z-index: 11;
+}
+.about-close:hover,
+.contact-close:hover,
+.Wedding-close:hover,
+.Model-close:hover,
+.nature-close:hover { transform: rotate(90deg); }
+
+/* about + contact: centred, but scrollable if content is taller than the screen */
+.about-section .section-scroll,
+.contact-section .section-scroll { display: flex; }
+
+.section-scroll .section-center {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: 100%;
+  margin: auto 0;
+  padding: 72px 0 64px;
+}
+
+.section-center {                 /* hero only */
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* about */
+.about-section img {
+  display: block;
+  width: min(350px, 60vw);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  margin: 0 auto;
+  border-radius: 50%;
+  box-shadow: 0 6px 25px rgba(255,235,167,.35);
+}
+.about-copy h2 {
+  font-size: clamp(20px, 2.6vw, 30px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  margin-bottom: 18px;
+}
+.about-section p {
+  letter-spacing: 1px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+.about-section .about-name {
+  letter-spacing: 1px;
+  color: var(--accent);
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+/* contact */
+.contact-section .contact-name {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+.contact-section .social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 8px;
+}
+.contact-section .social a {
+  display: inline-block;
+  padding: 10px 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+/* galleries */
+.Wedding-section .section-scroll,
+.Model-section .section-scroll,
+.nature-section .section-scroll { padding: 90px 0 70px; }
+
+.Wedding-section img,
+.Model-section img,
+.nature-section img {
+  margin-top: 30px;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  background-color: rgba(255,255,255,.06);   /* placeholder while the photo loads */
+}
+.Wedding-section h3,
+.Model-section h3,
+.nature-section h3 {
+  font-size: 7vw;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+/* #Footer
+================================================== */
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 20px;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  background-color: #000407;
+  border-top: 1px solid rgba(255,255,255,.15);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+footer p { margin: 0; color: #c4c3ca; }
+footer a { color: var(--accent); }
+
+/* #Responsive – ordered from large to small so each step overrides the last
+================================================== */
+
+/* touch devices and anything narrower than a laptop: no custom cursor */
+@media (max-width: 1200px), (hover: none), (pointer: coarse) {
+  .cursor, .cursor2, .cursor3 { display: none; }
+}
+
+@media (max-width: 1024px) {
+  :root { --name-size: 10vw; }
+  .about-text,
+  .contact-text { font-size: 20px; }
+}
+
+@media (max-width: 967px) {
+  :root { --name-size: 11vw; }
+  .hero-section p { font-size: 18px; }
+  .hero-section p span { margin-left: 10px; margin-right: 10px; }
+  .Wedding-section h3,
+  .Model-section h3,
+  .nature-section h3 { font-size: 13vw; }
+}
+
+/* phones and small tablets */
+@media (max-width: 768px) {
+  :root { --name-size: 15vw; }
+
+  .hero-section p { font-size: 15px; line-height: 1.2; }
+  .hero-section p span {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,235,167,.45);   /* shows these are tappable */
+  }
+  .hero-section .dancing span { padding: 5px 10px; }
+
+  /* about / contact move to the top corners and read horizontally */
+  .about-text,
+  .contact-text {
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    padding: 10px 6px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    -webkit-writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+  .about-text   { left: 14px; }
+  .contact-text { right: 14px; }
+
+  .section-scroll .section-center { padding: 76px 0 56px; }
+
+  .about-section p {
+    font-size: 14px;
+    letter-spacing: .3px;
+    line-height: 1.75;
+    text-align: left;
+  }
+  .about-section .about-name { text-align: center; }
+  .about-copy h2 { font-size: 19px; }
+
+  .Wedding-section .section-scroll,
+  .Model-section .section-scroll,
+  .nature-section .section-scroll { padding: 76px 0 70px; }
+  .Wedding-section img,
+  .Model-section img,
+  .nature-section img { margin-top: 16px; }
+
+  footer { font-size: 11px; gap: 0 12px; padding-top: 6px; }
+}
+
+@media (max-width: 580px) {
+  .contact-section .contact-name { font-size: 24px; }
+  .contact-section .social a { font-size: 13px; letter-spacing: 0; padding: 10px 6px; }
+}
+
+/* short landscape phones */
+@media (max-height: 480px) and (orientation: landscape) {
+  :root { --name-size: 9vw; }
+  .about-section img { width: 110px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    -webkit-transition-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    -webkit-transition-delay: 0ms !important;
+    transition-delay: 0ms !important;
+  }
+}
